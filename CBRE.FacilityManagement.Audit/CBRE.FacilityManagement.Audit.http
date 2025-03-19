@@ -1,0 +1,6 @@
+@CBRE.FacilityManagement.Audit_HostAddress = http://localhost:5263
+
+GET {{CBRE.FacilityManagement.Audit_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
