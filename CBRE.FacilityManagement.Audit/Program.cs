@@ -1,7 +1,9 @@
 using CBRE.FacilityManagement.Audit.Application.Contracts.Persistence;
 using CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetCustomers;
 using CBRE.FacilityManagement.Audit.Application.MappingProfile;
+using CBRE.FacilityManagement.Audit.Persistence.DatabaseContexts;
 using CBRE.FacilityManagement.Audit.Persistence.Repository;
+using Microsoft.Extensions.Configuration;
 internal class Program
 {
     private static void Main(string[] args)
@@ -20,8 +22,8 @@ internal class Program
         builder.Services.AddScoped<IELogBookRepository, ELogBookRespository>();
         // Register AutoMapper
         builder.Services.AddAutoMapper(typeof(ElogBookMappingProfile));
-
-
+        builder.Services.AddDbContext<ELogBookDbContext>();
+        
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
