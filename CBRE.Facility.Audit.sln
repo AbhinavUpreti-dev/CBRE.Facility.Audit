@@ -5,25 +5,25 @@ VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B25F9851-4948-4F0C-94B4-5FCC30E99470}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CBRE.FacilityManagement.Audit.API", "CBRE.FacilityManagement.Audit\CBRE.FacilityManagement.Audit.API.csproj", "{2F35740A-955C-4BC0-8C6A-8CFD446BE047}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{875BB907-3CE3-49F6-A85A-CA24EABDD6E1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{4E26C11E-F98C-46FA-92FE-10DE6AF171BE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{52D76AC0-0D73-4899-83BA-E1BA29509227}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CBRE.FacilityManagement.Audit.Application", "CBRE.FacilityManagement.Audit.Application\CBRE.FacilityManagement.Audit.Application.csproj", "{E4D2CF07-AEE3-49AE-A62F-6954861D6CB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CBRE.FacilityManagement.Audit.Application", "CBRE.FacilityManagement.Audit.Application\CBRE.FacilityManagement.Audit.Application.csproj", "{E4D2CF07-AEE3-49AE-A62F-6954861D6CB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CBRE.FacilityManagement.Audit.Persistence", "CBRE.FacilityManagement.Audit.Persistence\CBRE.FacilityManagement.Audit.Persistence.csproj", "{CDF0797A-1C73-478D-9140-8B371B4DBC6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CBRE.FacilityManagement.Audit.Persistence", "CBRE.FacilityManagement.Audit.Persistence\CBRE.FacilityManagement.Audit.Persistence.csproj", "{CDF0797A-1C73-478D-9140-8B371B4DBC6C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{411F5510-52DD-4297-8F78-D2F4B21511FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CBRE.FacilityManagement.Audit.Core", "CBRE.FacilityManagement.Audit.Core\CBRE.FacilityManagement.Audit.Core.csproj", "{43A0235C-C710-4C87-842A-F447C0DE1184}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CBRE.FacilityManagement.Audit.Core", "CBRE.FacilityManagement.Audit.Core\CBRE.FacilityManagement.Audit.Core.csproj", "{43A0235C-C710-4C87-842A-F447C0DE1184}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{631C1A1D-4C37-4F57-AFFC-F0DD44871B4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CBRE.FacilityManagement.Audit.Infrastructure", "CBRE.FacilityManagement.Audit.Infrastructure\CBRE.FacilityManagement.Audit.Infrastructure.csproj", "{11722E84-5F5B-41B9-A493-A0B62875856F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CBRE.FacilityManagement.Audit.Infrastructure", "CBRE.FacilityManagement.Audit.Infrastructure\CBRE.FacilityManagement.Audit.Infrastructure.csproj", "{11722E84-5F5B-41B9-A493-A0B62875856F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CBRE.FacilityManagement.Audit.API", "CBRE.FacilityManagement.Audit.Api\CBRE.FacilityManagement.Audit.API.csproj", "{FC35A1A1-DB73-49CC-B652-3636FC36ACF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +31,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2F35740A-955C-4BC0-8C6A-8CFD446BE047}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F35740A-955C-4BC0-8C6A-8CFD446BE047}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F35740A-955C-4BC0-8C6A-8CFD446BE047}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F35740A-955C-4BC0-8C6A-8CFD446BE047}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E4D2CF07-AEE3-49AE-A62F-6954861D6CB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E4D2CF07-AEE3-49AE-A62F-6954861D6CB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4D2CF07-AEE3-49AE-A62F-6954861D6CB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,12 +47,15 @@ Global
 		{11722E84-5F5B-41B9-A493-A0B62875856F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11722E84-5F5B-41B9-A493-A0B62875856F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11722E84-5F5B-41B9-A493-A0B62875856F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC35A1A1-DB73-49CC-B652-3636FC36ACF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC35A1A1-DB73-49CC-B652-3636FC36ACF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC35A1A1-DB73-49CC-B652-3636FC36ACF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC35A1A1-DB73-49CC-B652-3636FC36ACF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{2F35740A-955C-4BC0-8C6A-8CFD446BE047} = {875BB907-3CE3-49F6-A85A-CA24EABDD6E1}
 		{875BB907-3CE3-49F6-A85A-CA24EABDD6E1} = {B25F9851-4948-4F0C-94B4-5FCC30E99470}
 		{4E26C11E-F98C-46FA-92FE-10DE6AF171BE} = {B25F9851-4948-4F0C-94B4-5FCC30E99470}
 		{52D76AC0-0D73-4899-83BA-E1BA29509227} = {B25F9851-4948-4F0C-94B4-5FCC30E99470}
@@ -66,6 +65,7 @@ Global
 		{43A0235C-C710-4C87-842A-F447C0DE1184} = {411F5510-52DD-4297-8F78-D2F4B21511FA}
 		{631C1A1D-4C37-4F57-AFFC-F0DD44871B4C} = {B25F9851-4948-4F0C-94B4-5FCC30E99470}
 		{11722E84-5F5B-41B9-A493-A0B62875856F} = {631C1A1D-4C37-4F57-AFFC-F0DD44871B4C}
+		{FC35A1A1-DB73-49CC-B652-3636FC36ACF7} = {875BB907-3CE3-49F6-A85A-CA24EABDD6E1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EFA8B20F-C57F-41D3-823A-5F64D4CA9B03}
