@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CBRE.FacilityManagement.Aud
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CBRE.FacilityManagement.Audit.API", "CBRE.FacilityManagement.Audit.Api\CBRE.FacilityManagement.Audit.API.csproj", "{FC35A1A1-DB73-49CC-B652-3636FC36ACF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestOpenAI", "TestOpenAI\TestOpenAI.csproj", "{BBBCED09-F8AA-45CF-9866-7B61792AAD16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{FC35A1A1-DB73-49CC-B652-3636FC36ACF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC35A1A1-DB73-49CC-B652-3636FC36ACF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC35A1A1-DB73-49CC-B652-3636FC36ACF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBBCED09-F8AA-45CF-9866-7B61792AAD16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBBCED09-F8AA-45CF-9866-7B61792AAD16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBBCED09-F8AA-45CF-9866-7B61792AAD16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBBCED09-F8AA-45CF-9866-7B61792AAD16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +72,7 @@ Global
 		{631C1A1D-4C37-4F57-AFFC-F0DD44871B4C} = {B25F9851-4948-4F0C-94B4-5FCC30E99470}
 		{11722E84-5F5B-41B9-A493-A0B62875856F} = {631C1A1D-4C37-4F57-AFFC-F0DD44871B4C}
 		{FC35A1A1-DB73-49CC-B652-3636FC36ACF7} = {875BB907-3CE3-49F6-A85A-CA24EABDD6E1}
+		{BBBCED09-F8AA-45CF-9866-7B61792AAD16} = {631C1A1D-4C37-4F57-AFFC-F0DD44871B4C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EFA8B20F-C57F-41D3-823A-5F64D4CA9B03}
