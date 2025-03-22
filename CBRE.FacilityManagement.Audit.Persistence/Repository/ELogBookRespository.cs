@@ -1,6 +1,6 @@
-﻿using CBRE.FacilityManagement.Audit.Application.Contracts.Persistence;
-using CBRE.FacilityManagement.Audit.Core;
+﻿using CBRE.FacilityManagement.Audit.Core;
 using CBRE.FacilityManagement.Audit.Persistence.DatabaseContexts;
+using CBRE.FacilityManagement.Audit.Persistence.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
