@@ -4,6 +4,9 @@ using CBRE.FacilityManagement.Audit.Application.MappingProfile;
 using CBRE.FacilityManagement.Audit.Persistence.DatabaseContexts;
 using CBRE.FacilityManagement.Audit.Persistence.Repository;
 using Microsoft.Extensions.Configuration;
+using CBRE.FacilityManagement.Audit.Infrastructure;
+using CBRE.FacilityManagement.Audit.API;
+using Microsoft.Extensions.Options;
 internal class Program
 {
     private static void Main(string[] args)
@@ -23,7 +26,16 @@ internal class Program
         // Register AutoMapper
         builder.Services.AddAutoMapper(typeof(ElogBookMappingProfile));
         builder.Services.AddDbContext<ELogBookDbContext>();
-        
+        // Register configuration
+        builder.Services.Configure<OpenAISettings>(builder.Configuration.GetSection("OpenAISettings"));
+
+        // Register IDocumentSummarizerAIService with parameters
+        builder.Services.AddScoped<IDocumentSummarizerAIService>(sp =>
+        {
+            var settings = sp.GetRequiredService<IOptions<OpenAISettings>>().Value;
+            return new DocumentSummarizerAIService(settings.Endpoint, settings.ApiKey, settings.DeploymentName);
+        });
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

@@ -1,5 +1,6 @@
 ﻿
 public interface IDocumentSummarizerAIService
 {
-    string GenerateSummaryAsync(List<string> documents);
+    string ExtractTextFromPdf(string filePath);
+    string GenerateSummaryAsync(List<string> documents, string extension);
 }

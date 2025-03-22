@@ -10,103 +10,114 @@ using OpenAI;
 using OpenAI.Chat;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 
-public class DocumentSummarizerAIService : IDocumentSummarizerAIService
+namespace CBRE.FacilityManagement.Audit.Infrastructure
 {
-    private readonly AzureOpenAIClient _openAIClient;
-    private readonly string _deploymentName;
-
-    public DocumentSummarizerAIService(string endpoint, string apiKey, string deploymentName)
+    public class DocumentSummarizerAIService : IDocumentSummarizerAIService
     {
-        _deploymentName = deploymentName;
-        var credentials = new AzureKeyCredential(apiKey);
-        _openAIClient = new AzureOpenAIClient(new Uri(endpoint), credentials);
-    }
+        private readonly AzureOpenAIClient _openAIClient;
+        private readonly string _deploymentName;
 
-    public string GenerateSummaryAsync(List<string> documents)
-    {
-        if (documents == null || documents.Count == 0)
+        public DocumentSummarizerAIService(string endpoint, string apiKey, string deploymentName)
         {
-            return "⚠️ No documents provided.";
+            _deploymentName = deploymentName;
+            var credentials = new AzureKeyCredential(apiKey);
+            _openAIClient = new AzureOpenAIClient(new Uri(endpoint), credentials);
         }
 
-        // Summarize each document individually if they are too long
-        List<string> individualSummaries = new List<string>();
-        foreach (var document in documents)
+        public string GenerateSummaryAsync(List<string> documents, string extension)
         {
-            string prompt = $"Please summarize the following document:\n\n{document}\n\nSummary:";
-            var messages = new List<ChatMessage>
+            if (documents == null || documents.Count == 0)
+            {
+                return "⚠️ No documents provided.";
+            }
+
+            // Summarize each document individually if they are too long
+            List<string> individualSummaries = new List<string>();
+            foreach (var document in documents)
+            {
+                var documentText = document;
+                if(extension.Contains("pdf"))
+                {
+                    documentText = ExtractTextFromPdf(documentText);
+                }
+                string prompt = $"Please summarize the following document:\n\n{documentText}\n\nSummary:";
+                var messages = new List<ChatMessage>
             {
                 new SystemChatMessage("You are a helpful assistant."),
                 new UserChatMessage(prompt) // Ensure the prompt is within token limit
             };
 
 
-            var chatClient = _openAIClient.GetChatClient(_deploymentName);
-            ChatCompletion completion;
-            try
-            {
-                completion = chatClient.CompleteChat(messages);
-            }
-            catch (Exception ex)
-            {
-                return $"⚠️ Error generating summary: {ex.Message}";
+                var chatClient = _openAIClient.GetChatClient(_deploymentName);
+                ChatCompletion completion;
+                try
+                {
+                    completion = chatClient.CompleteChat(messages);
+                }
+                catch (Exception ex)
+                {
+                    return $"⚠️ Error generating summary: {ex.Message}";
+                }
+
+                individualSummaries.Add(completion.Content[0].Text.ToString());
             }
 
-            individualSummaries.Add(completion.Content[0].Text.ToString());
+            // Combine individual summaries into one final summary
+            string finalSummary = string.Join("\n\n---\n\n", individualSummaries);
+            return finalSummary;
         }
 
-        // Combine individual summaries into one final summary
-        string finalSummary = string.Join("\n\n---\n\n", individualSummaries);
-        return finalSummary;
-    }
-
-    //This method is to test open AI from Console application "TestOpenAI"
-    public List<string> ReadDocumentsFromLocalPaths(List<string> filePaths)
-    {
-        List<string> documents = new List<string>();
-        foreach (var filePath in filePaths)
+        //This method is to test open AI from Console application "TestOpenAI"
+        public List<string> ReadDocumentsFromLocalPaths(List<string> filePaths)
         {
-            try
+            List<string> documents = new List<string>();
+            foreach (var filePath in filePaths)
             {
-                if (File.Exists(filePath))
+                try
                 {
-                    string documentContent;
-                    if (Path.GetExtension(filePath).Equals(".pdf", StringComparison.OrdinalIgnoreCase))
+                    if (File.Exists(filePath))
                     {
-                        documentContent = ExtractTextFromPdf(filePath);
+                        string documentContent;
+                        if (Path.GetExtension(filePath).Equals(".pdf", StringComparison.OrdinalIgnoreCase))
+                        {
+                            documentContent = ExtractTextFromPdf(filePath);
+                        }
+                        else
+                        {
+                            documentContent = File.ReadAllText(filePath);
+                        }
+                        documents.Add(documentContent);
                     }
                     else
                     {
-                        documentContent = File.ReadAllText(filePath);
+                        Console.WriteLine($"⚠️ File not found: {filePath}");
                     }
-                    documents.Add(documentContent);
                 }
-                else
+                catch (Exception ex)
                 {
-                    Console.WriteLine($"⚠️ File not found: {filePath}");
+                    Console.WriteLine($"⚠️ Error reading file {filePath}: {ex.Message}");
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"⚠️ Error reading file {filePath}: {ex.Message}");
-            }
+            return documents;
         }
-        return documents;
-    }
 
 
-    private string ExtractTextFromPdf(string filePath)
-    {
-        StringBuilder text = new StringBuilder();
-        using (PdfReader reader = new PdfReader(filePath))
-        using (PdfDocument pdfDoc = new PdfDocument(reader))
+
+        public string ExtractTextFromPdf(string filePath)
         {
-            for (int i = 1; i <= pdfDoc.GetNumberOfPages(); i++)
+            StringBuilder text = new StringBuilder();
+            using (PdfReader reader = new PdfReader(filePath))
+            using (PdfDocument pdfDoc = new PdfDocument(reader))
             {
-                text.Append(PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(i)));
+                for (int i = 1; i <= pdfDoc.GetNumberOfPages(); i++)
+                {
+                    text.Append(PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(i)));
+                }
             }
+            return text.ToString();
         }
-        return text.ToString();
     }
 }

@@ -16,11 +16,12 @@ namespace CBRE.FacilityManagement.Audit.Persistence.DatabaseContexts
         }
 
         public DbSet<Customers> Customers { get; set; }
-
+        public DbSet<Documents> Documents { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
+                optionsBuilder.EnableDetailedErrors();
                 optionsBuilder.UseSqlServer("Server=localhost\\MSSQLSERVERLOCAL;Database=DEV_ELogBooks;Trusted_Connection=True;TrustServerCertificate=True;");
             }
         }
@@ -30,7 +31,7 @@ namespace CBRE.FacilityManagement.Audit.Persistence.DatabaseContexts
             base.OnModelCreating(modelBuilder);
 
             // Apply the Customer configuration
-            modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ELogBookDbContext).Assembly);
 
         }
     }
