@@ -38,14 +38,15 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetDocumen
             }
 
             var fileData = document.FileData;
-            var filePath = "input.pdf";
+            var fileExtension = document.Extension;
+            var filePath = $"input{fileExtension}";
 
-            // Save the byte array as a PDF file
+            // Save the byte array as a file
             await File.WriteAllBytesAsync(filePath, fileData, cancellationToken);
 
             try
             {
-                var aiSummary = _summarizerAIService.GenerateSummaryAsync(new List<string> { filePath }, document.Extension);
+                var aiSummary = _summarizerAIService.GenerateSummaryAsync(new List<string> { filePath }, fileExtension);
 
                 return new List<DocumentDTO> { new DocumentDTO { DocumentSummary = aiSummary } };
             }

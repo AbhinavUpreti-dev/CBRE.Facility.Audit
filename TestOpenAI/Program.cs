@@ -52,7 +52,7 @@ namespace ConsoleApp
 
             // Generate the summary
 
-            string summary = summarizer.GenerateSummaryAsync(documents);
+            string summary = summarizer.GenerateSummaryAsync(documents,"pdf");
 
             // Print the generated summary
 
