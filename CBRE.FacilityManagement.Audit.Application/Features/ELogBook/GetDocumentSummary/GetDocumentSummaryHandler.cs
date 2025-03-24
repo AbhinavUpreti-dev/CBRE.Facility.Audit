@@ -23,26 +23,22 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetDocumen
 
         public async Task<List<DocumentDTO>> Handle(GetDocumentSummary request, CancellationToken cancellationToken)
         {
-            var documents = await _repository.GetDocumentsAsync(
-                request.Request.EntityId,
-                request.Request.DocumentGroupId,
-                request.Request.Name,
-                request.Request.MimeType,
-                request.Request.Extension,
-                request.Request.IsActive);
+            var document = await _repository.GetDocumentsAsync(
+                request.Request.CustomerName,
+                request.Request.ContractName,
+                request.Request.BuildingName);
 
-            var document = documents.FirstOrDefault();
             if (document == null)
             {
-                return new List<DocumentDTO>();
+                // Handle the case where no document is found
+                throw new Exception("No document found for the given criteria.");
             }
-
             var fileData = document.FileData;
             var fileExtension = document.Extension;
             var filePath = $"input{fileExtension}";
 
             // Save the byte array as a file
-            await File.WriteAllBytesAsync(filePath, fileData, cancellationToken);
+            File.WriteAllBytes(filePath, fileData);
 
             try
             {

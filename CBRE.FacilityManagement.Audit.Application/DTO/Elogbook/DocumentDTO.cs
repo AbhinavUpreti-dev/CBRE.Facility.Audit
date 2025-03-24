@@ -9,5 +9,6 @@ namespace CBRE.FacilityManagement.Audit.Application.DTO.Elogbook
     public class DocumentDTO
     {
         public string DocumentSummary { get; set; }
+
     }
 }

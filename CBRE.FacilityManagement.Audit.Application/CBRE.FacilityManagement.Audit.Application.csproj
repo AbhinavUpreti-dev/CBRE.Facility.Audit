@@ -21,4 +21,8 @@
     <ProjectReference Include="..\CBRE.FacilityManagement.Audit.Core\CBRE.FacilityManagement.Audit.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="MappingProfile\" />
+  </ItemGroup>
+
 </Project>

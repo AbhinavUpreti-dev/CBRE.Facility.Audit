@@ -1,6 +1,5 @@
 using CBRE.FacilityManagement.Audit.Application.Contracts.Persistence;
 using CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetCustomers;
-using CBRE.FacilityManagement.Audit.Application.MappingProfile;
 using CBRE.FacilityManagement.Audit.Persistence.DatabaseContexts;
 using CBRE.FacilityManagement.Audit.Persistence.Repository;
 using Microsoft.Extensions.Configuration;
@@ -14,19 +13,17 @@ internal class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        // Register AutoMapper
+        builder.Services.AddAutoMapper(typeof(Program));
+
         // Register MediatR
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetCustomerQuery).Assembly));
-        builder.Services.AddScoped<IELogBookRepository, ELogBookRespository>();
-        // Register AutoMapper
-        builder.Services.AddAutoMapper(typeof(ElogBookMappingProfile));
+        builder.Services.AddScoped<IELogBookRepository, ELogBookRepository>();
         builder.Services.AddDbContext<ELogBookDbContext>();
-        // Register configuration
         builder.Services.Configure<OpenAISettings>(builder.Configuration.GetSection("OpenAISettings"));
 
         // Register IDocumentSummarizerAIService with parameters
@@ -46,11 +43,9 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
-
         app.MapControllers();
-
         app.Run();
     }
+
 }
