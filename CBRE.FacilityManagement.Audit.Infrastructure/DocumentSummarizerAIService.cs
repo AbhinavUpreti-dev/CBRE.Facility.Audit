@@ -16,6 +16,8 @@ using iText.Layout.Element;
 using DocumentFormat.OpenXml.Packaging;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Microsoft.Identity.Client;
+using Azure.Identity;
 
 namespace CBRE.FacilityManagement.Audit.Infrastructure
 {
@@ -83,6 +85,36 @@ namespace CBRE.FacilityManagement.Audit.Infrastructure
 
             string finalSummary = string.Join("\n\n---\n\n", individualSummaries);
             return finalSummary;
+        }
+
+
+        public async Task<string> GenerateAuditSummaryAsync(string jsonText)
+        {
+            if (string.IsNullOrEmpty(jsonText))
+            {
+                return "⚠️ No data provided.";
+            }
+
+            // Summarize each document individually if they are too long
+            var chatClient = _openAIClient.GetChatClient(_deploymentName);
+
+            var messages = new List<ChatMessage>
+            {
+                new SystemChatMessage("You are a helpful assistant."),
+                new UserChatMessage($"Summarize the following JSON data: {jsonText}.Please provide a detailed summary including the key points of the json without including any words such as json or datasets in response and include title as Audit Summary.")
+            };
+
+            ChatCompletion completion;
+            try
+            {
+                completion = await chatClient.CompleteChatAsync(messages);
+            }
+            catch (Exception ex)
+            {
+                return $"⚠️ Error generating summary: {ex.Message}";
+            }
+
+            return completion.Content[0].Text.ToString();
         }
 
         private List<string> SplitTextIntoChunks(string text, int chunkSize)

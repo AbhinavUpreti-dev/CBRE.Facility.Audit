@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CBRE.FacilityManagement.Audit.Application.DTO.Elogbook;
+using CBRE.FacilityManagement.Audit.Persistence.Repository.Interfaces;
 using MediatR;
 using System;
 using System.Collections.Generic;

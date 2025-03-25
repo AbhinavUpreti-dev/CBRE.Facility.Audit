@@ -9,4 +9,6 @@ using System.Threading.Tasks;
 namespace CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetCustomers
 {
     public record GetCustomerQuery : IRequest<List<CustomerDTO>>;
+
+    
 }
