@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CBRE.FacilityManagement.Audit.Application.Contracts.Persistence;
 using CBRE.FacilityManagement.Audit.Application.DTO.Elogbook;
 using MediatR;
 using System;
@@ -7,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using CBRE.FacilityManagement.Audit.Persistence.Repository.Interfaces;
 namespace CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetCustomers
 {
     public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, List<CustomerDTO>>

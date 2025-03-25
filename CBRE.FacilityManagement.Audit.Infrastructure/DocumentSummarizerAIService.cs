@@ -23,7 +23,7 @@ namespace CBRE.FacilityManagement.Audit.Infrastructure
     {
         private readonly AzureOpenAIClient _openAIClient;
         private readonly string _deploymentName;
-
+        const int maxTokenLimit = 128000;
         public DocumentSummarizerAIService(string endpoint, string apiKey, string deploymentName)
         {
             _deploymentName = deploymentName;
@@ -38,7 +38,6 @@ namespace CBRE.FacilityManagement.Audit.Infrastructure
                 return "⚠️ No documents provided.";
             }
 
-            // Summarize each document individually if they are too long
             List<string> individualSummaries = new List<string>();
             foreach (var document in documents)
             {
@@ -55,32 +54,47 @@ namespace CBRE.FacilityManagement.Audit.Infrastructure
                 {
                     documentText = ExtractTextFromExcel(documentText);
                 }
-                string prompt = $"Please summarize the following document:\n\n{documentText}\n\nSummary:";
-                var messages = new List<ChatMessage>
-            {
-                new SystemChatMessage("You are a helpful assistant."),
-                new UserChatMessage(prompt) // Ensure the prompt is within token limit
-            };
 
-
-                var chatClient = _openAIClient.GetChatClient(_deploymentName);
-                ChatCompletion completion;
-                try
+                // Split document text into smaller chunks if necessary
+                var chunks = SplitTextIntoChunks(documentText, maxTokenLimit / 2); // Adjust chunk size as needed
+                foreach (var chunk in chunks)
                 {
-                    completion = chatClient.CompleteChat(messages);
-                }
-                catch (Exception ex)
-                {
-                    return $"⚠️ Error generating summary: {ex.Message}";
-                }
+                    string prompt = $"You are an AI assistant. Please provide a concise and informative recommendations from the following document. Highlight the recommendations section if present:\n\n{chunk}\n\nSummary:";
+                    var messages = new List<ChatMessage>
+                    {
+                        new SystemChatMessage("You are a helpful assistant."),
+                        new UserChatMessage(prompt)
+                    };
 
-                individualSummaries.Add(completion.Content[0].Text.ToString());
+                    var chatClient = _openAIClient.GetChatClient(_deploymentName);
+                    ChatCompletion completion;
+                    try
+                    {
+                        completion = chatClient.CompleteChat(messages);
+                    }
+                    catch (Exception ex)
+                    {
+                        return $"⚠️ Error generating summary: {ex.Message}";
+                    }
+
+                    individualSummaries.Add(completion.Content[0].Text.ToString());
+                }
             }
 
-            // Combine individual summaries into one final summary
             string finalSummary = string.Join("\n\n---\n\n", individualSummaries);
             return finalSummary;
         }
+
+        private List<string> SplitTextIntoChunks(string text, int chunkSize)
+        {
+            var chunks = new List<string>();
+            for (int i = 0; i < text.Length; i += chunkSize)
+            {
+                chunks.Add(text.Substring(i, Math.Min(chunkSize, text.Length - i)));
+            }
+            return chunks;
+        }
+
 
         //This method is to test open AI from Console application "TestOpenAI"
         public List<string> ReadDocumentsFromLocalPaths(List<string> filePaths)
@@ -118,28 +132,51 @@ namespace CBRE.FacilityManagement.Audit.Infrastructure
 
 
 
+        //public string ExtractTextFromPdf(string filePath)
+        //{
+        //    try
+        //    {
+
+        //        StringBuilder text = new StringBuilder();
+        //        using (PdfReader reader = new PdfReader(filePath))
+        //        using (PdfDocument pdfDoc = new PdfDocument(reader))
+        //        {
+        //            for (int i = 1; i <= pdfDoc.GetNumberOfPages(); i++)
+        //            {
+        //                text.Append(PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(i)));
+        //            }
+        //        }
+        //        return text.ToString();
+
+        //    }
+        //    catch (Exception  ex)
+        //    {
+        //        throw;
+        //    }
+        //}
+
         public string ExtractTextFromPdf(string filePath)
         {
             try
             {
-
                 StringBuilder text = new StringBuilder();
                 using (PdfReader reader = new PdfReader(filePath))
                 using (PdfDocument pdfDoc = new PdfDocument(reader))
                 {
-                    for (int i = 1; i <= pdfDoc.GetNumberOfPages(); i++)
+                    int numberOfPages = Math.Min(2, pdfDoc.GetNumberOfPages());
+                    for (int i = 1; i <= numberOfPages; i++)
                     {
                         text.Append(PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(i)));
                     }
                 }
                 return text.ToString();
-
             }
-            catch (Exception  ex)
+            catch (Exception ex)
             {
                 throw;
             }
         }
+
 
         public string ExtractTextFromDoc(string filePath)
         {
@@ -185,6 +222,29 @@ namespace CBRE.FacilityManagement.Audit.Infrastructure
                 }
             }
             return text.ToString();
+        }
+
+        public async Task<string> PerformComplianceCheckAsync(string documentText)
+        {
+            string prompt = $"You are an AI assistant. Please check the following document for compliance with the specified criteria:\n\n{documentText}\n\nCompliance Check Result:";
+            var messages = new List<ChatMessage>
+        {
+            new SystemChatMessage("You are a helpful assistant."),
+            new UserChatMessage(prompt)
+        };
+
+            var chatClient = _openAIClient.GetChatClient(_deploymentName);
+            ChatCompletion completion;
+            try
+            {
+                completion = await chatClient.CompleteChatAsync(messages);
+            }
+            catch (Exception ex)
+            {
+                return $"⚠️ Error performing compliance check: {ex.Message}";
+            }
+
+            return completion.Content[0].Text.ToString();
         }
     }
 }

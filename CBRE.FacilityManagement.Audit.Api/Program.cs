@@ -1,4 +1,3 @@
-using CBRE.FacilityManagement.Audit.Application.Contracts.Persistence;
 using CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetCustomers;
 using CBRE.FacilityManagement.Audit.Persistence.DatabaseContexts;
 using CBRE.FacilityManagement.Audit.Persistence.Repository;
@@ -6,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using CBRE.FacilityManagement.Audit.Infrastructure;
 using CBRE.FacilityManagement.Audit.API;
 using Microsoft.Extensions.Options;
+using CBRE.FacilityManagement.Audit.Persistence.Repository.Interfaces;
 internal class Program
 {
     private static void Main(string[] args)

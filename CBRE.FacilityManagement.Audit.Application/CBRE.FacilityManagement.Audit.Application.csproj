@@ -19,9 +19,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CBRE.FacilityManagement.Audit.Core\CBRE.FacilityManagement.Audit.Core.csproj" />
+    <ProjectReference Include="..\CBRE.FacilityManagement.Audit.Persistence\CBRE.FacilityManagement.Audit.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Contracts\Persistence\" />
     <Folder Include="MappingProfile\" />
   </ItemGroup>
 

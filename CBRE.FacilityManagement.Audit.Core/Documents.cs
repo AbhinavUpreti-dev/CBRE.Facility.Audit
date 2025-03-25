@@ -28,9 +28,29 @@ namespace CBRE.FacilityManagement.Audit.Core
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public int? ParentId { get; set; } // Nullable for groups
+        public DocumentGroup Parent { get; set; }
+        public ICollection<DocumentGroup> SubGroups { get; set; }
         public ICollection<Documents> Documents { get; set; }
         public ICollection<DocumentGroupProperty> DocumentGroupProperties { get; set; }
+        public int? MasterDocumentGroupId { get; set; } // Foreign key to MasterDocumentGroup
+        public MasterDocumentGroup MasterDocumentGroup { get; set; } // Navigation property to MasterDocumentGroup
+
+        // Computed property for EffectiveName
+        public string EffectiveName => !string.IsNullOrEmpty(Name) ? Name : MasterDocumentGroup?.Name;
     }
+
+    public class MasterDocumentGroup
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool IsMandatory { get; set; }
+        public int? ParentId { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsClientResponsible { get; set; }
+    }
+
+
 
     public class DocumentGroupProperty
     {
