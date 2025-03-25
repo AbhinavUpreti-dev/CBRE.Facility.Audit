@@ -32,7 +32,7 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour.Models.Audit.AuditAnswers
         /// <summary>
         /// Gets or sets the start date.
         /// </summary>
-        public ZonedDateTime? StartDate { get; set; }
+        public string? StartDate { get; set; }
 
         /// <summary>
         /// Gets or sets the title.
@@ -72,6 +72,6 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour.Models.Audit.AuditAnswers
         /// <summary>
         /// Gets or sets the completion date when audit is completed.
         /// </summary>
-        public ZonedDateTime? CompletionDate { get; set; }
+        public string? CompletionDate { get; set; }
     }
 }

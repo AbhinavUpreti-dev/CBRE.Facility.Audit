@@ -7,13 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.6" />
+    <PackageReference Include="NodaTime" Version="3.2.1" />
+    <PackageReference Include="NodaTime.Serialization.JsonNet" Version="2.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CBRE.FacilityManagement.Audit.Application\CBRE.FacilityManagement.Audit.Application.csproj" />
     <ProjectReference Include="..\CBRE.FacilityManagement.Audit.Core\CBRE.FacilityManagement.Audit.Core.csproj" />
+    <ProjectReference Include="..\CBRE.FacilityManagement.Audit.Infrastructure\CBRE.FacilityManagement.Audit.Infrastructure.csproj" />
     <ProjectReference Include="..\CBRE.FacilityManagement.Audit.Persistence\CBRE.FacilityManagement.Audit.Persistence.csproj" />
   </ItemGroup>
 

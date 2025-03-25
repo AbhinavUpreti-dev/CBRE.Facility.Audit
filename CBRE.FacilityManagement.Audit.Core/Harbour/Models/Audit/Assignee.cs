@@ -17,6 +17,8 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour.Models.Audit
         /// </summary>
         public AssigneeType? Type { get; set; } = AssigneeType.Auditor;
 
+        public string AuditAssigneeType { get; set; }
+
         /// <summary>
         /// Gets or sets the user id.
         /// </summary>

@@ -2,6 +2,8 @@
 using CBRE.FacilityManagement.Audit.Application.DTO.Elogbook;
 using MediatR;
 using CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetCustomers;
+using CBRE.FacilityManagement.Audit.Application.Models.Documents;
+using CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetDocumentSummary;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace CBRE.FacilityManagement.Audit.API.Controllers
@@ -22,6 +24,14 @@ namespace CBRE.FacilityManagement.Audit.API.Controllers
             var query = new GetCustomerQuery();
             var customers = await _mediator.Send(query);
             return Ok(customers);
+        }
+
+        [HttpPost("documents")]
+        public async Task<ActionResult<List<DocumentDTO>>> GetDocuments([FromBody] DocumentRequest request)
+        {
+            var query = new GetDocumentSummary(request);
+            var documents = await _mediator.Send(query);
+            return Ok(documents);
         }
     }
 }

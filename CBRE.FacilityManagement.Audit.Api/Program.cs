@@ -7,8 +7,16 @@ using CBRE.FacilityManagement.Audit.Persistence.Repository;
 using CBRE.FacilityManagement.Audit.Persistence.Repository.Interfaces;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
+using CBRE.FacilityManagement.Audit.Infrastructure;
+using CBRE.FacilityManagement.Audit.API;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using CBRE.FacilityManagement.Audit.Application.Features.Harbour.Interfaces;
+using CBRE.FacilityManagement.Audit.Application.Features.Harbour.Services;
+using NodaTime.Serialization.JsonNet;
+using NodaTime;
+using Microsoft.OpenApi.Models;
 internal class Program
 {
     private static void Main(string[] args)
@@ -17,10 +25,15 @@ internal class Program
 
         // Add services to the container.
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers().AddNewtonsoftJson(
+                    options => { options.SerializerSettings.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb); });
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            c.OperationFilter<SwaggerOperationFilter>();
+        });
 
         // Register MediatR
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetCustomerQuery).Assembly));
@@ -28,6 +41,16 @@ internal class Program
         // Register AutoMapper
         builder.Services.AddAutoMapper(typeof(ElogBookMappingProfile));
         builder.Services.AddDbContext<ELogBookDbContext>();
+        // Register configuration
+        builder.Services.Configure<OpenAISettings>(builder.Configuration.GetSection("OpenAISettings"));
+
+        // Register IDocumentSummarizerAIService with parameters
+        builder.Services.AddScoped<IDocumentSummarizerAIService>(sp =>
+        {
+            var settings = sp.GetRequiredService<IOptions<OpenAISettings>>().Value;
+            return new DocumentSummarizerAIService(settings.Endpoint, settings.ApiKey, settings.DeploymentName);
+        });
+
 
         var cosmosSettings = builder.Configuration.GetSection("Cosmos").Get<CosmosSettings>();
 
@@ -51,6 +74,7 @@ internal class Program
 
         builder.Services.AddSingleton(cosmosClient);
         builder.Services.AddSingleton<IRepository, HarbourCosmosDbRepository>();
+        builder.Services.AddScoped<IAuditAppService, AuditAppService>();
 
         // Creating the database if it doesnt exists
         Microsoft.Azure.Cosmos.Database database = cosmosClient.CreateDatabaseIfNotExistsAsync(cosmosSettings.DatabaseName).GetAwaiter().GetResult();
@@ -61,7 +85,7 @@ internal class Program
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1"));
         }
 
         app.UseHttpsRedirection();

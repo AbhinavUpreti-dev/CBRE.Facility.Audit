@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using CBRE.FacilityManagement.Audit.Application.DTO.Elogbook;
-using CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetCustomers;
-using MediatR;
+using CBRE.FacilityManagement.Audit.Application.Features.Harbour.Interfaces;
+using CBRE.FacilityManagement.Audit.Application.Models.Harbour;
 
 namespace CBRE.FacilityManagement.Audit.API.Controllers
 {
@@ -9,18 +8,17 @@ namespace CBRE.FacilityManagement.Audit.API.Controllers
     [ApiController]
     public class HarbourController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IAuditAppService auditAppService;
 
-        public HarbourController(IMediator mediator)
+        public HarbourController(IAuditAppService auditAppService)
         {
-            _mediator = mediator;
+            this.auditAppService = auditAppService;
         }
-        [HttpGet("GetAuditSummary")]
-        public async Task<ActionResult> GetCustomers()
+        [HttpGet("GetAuditSummary/{ct?}")]
+        public async Task<ActionResult> GetAuditSummary(HierarchyInputModel inputModel)
         {
-            var query = new GetCustomerQuery();
-            var customers = await _mediator.Send(query);
-            return Ok(customers);
+            var result = await auditAppService.GetHierarchySummary(inputModel);
+            return Ok(result);
         }
     }
 }

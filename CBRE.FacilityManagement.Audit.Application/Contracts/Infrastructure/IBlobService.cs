@@ -9,5 +9,7 @@ namespace CBRE.FacilityManagement.Audit.Application.Contracts.Infrastructure
     public interface IBlobService
     {
         Task<Stream> DownloadBlobAsync(string containerName, string blobName);
+
+       // Task<List<string>> ReadDocumentsFromBlobStorageAsync(List<string> blobUrls, string connectionString);
     }
 }

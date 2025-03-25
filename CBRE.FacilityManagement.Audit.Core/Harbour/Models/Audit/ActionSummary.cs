@@ -17,5 +17,7 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour.Models.Audit
         public DateTime ActionDueDate { get; set; }
 
         public string ActionStatus { get; set; } = string.Empty;
+
+        public bool IsVerificationRequired { get; set; }
     }
 }

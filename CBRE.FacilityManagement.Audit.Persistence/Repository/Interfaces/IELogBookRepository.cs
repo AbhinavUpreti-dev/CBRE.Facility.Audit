@@ -12,6 +12,6 @@ namespace CBRE.FacilityManagement.Audit.Persistence.Repository.Interfaces
     {
         Task<List<Customers>> GetCustomersAsync(int id = 0);
 
-        // Task<List<Documents>> GetDocumentsAsync(Guid? entityId = null, int? documentGroupId = null, string name = null, string mimeType = null, string extension = null, bool? isActive = null);
+        Task<List<Documents>> GetDocumentsAsync(Guid? entityId = null, int? documentGroupId = null, string name = null, string mimeType = null, string extension = null, bool? isActive = null);
     }
 }

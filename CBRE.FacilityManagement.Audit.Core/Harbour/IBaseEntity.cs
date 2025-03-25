@@ -30,7 +30,7 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour
         /// <summary>
         /// Gets or sets the created date.
         /// </summary>
-        DateTime CreatedDate { get; set; }
+        string CreatedDate { get; set; }
 
         /// <summary>
         /// Gets or sets the id.
@@ -45,7 +45,7 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour
         /// <summary>
         /// Gets or sets the last updated date.
         /// </summary>
-        DateTime LastUpdatedDate { get; set; }
+        string LastUpdatedDate { get; set; }
     }
 
     /// <summary>
@@ -122,7 +122,7 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour
         /// <summary>
         /// Gets or sets the created date.
         /// </summary>
-        public virtual DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public virtual string CreatedDate { get; set; }
 
         /// <summary>
         /// Gets or sets the id.
@@ -138,24 +138,7 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour
         /// <summary>
         /// Gets or sets the last updated date.
         /// </summary>
-        public virtual DateTime LastUpdatedDate { get; set; } = DateTime.UtcNow;
-
-        /// <summary>
-        /// The set audit properties.
-        /// </summary>
-        /// <param name="userId">
-        /// The user Id.
-        /// </param>
-        public void SetAuditProperties(string userId = null, string timezone = null)
-        {
-            this.LastUpdatedByUser = userId;
-            this.LastUpdatedDate = DateTime.UtcNow;
-            if (this.CreatedByUserId == null)
-            {
-                this.CreatedByUserId = userId;
-                this.CreatedDate = DateTime.UtcNow;
-            }
-        }
+        public virtual string LastUpdatedDate { get; set; }
 
         /// <summary>
         /// Gets or sets the local timezone of the user. To be passed from client side.

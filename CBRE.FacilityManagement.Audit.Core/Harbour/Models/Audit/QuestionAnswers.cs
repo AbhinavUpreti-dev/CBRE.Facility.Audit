@@ -14,6 +14,8 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour.Models.Audit
 
         public string Reference { get; set; }
 
-        public string FindingDetails { get; set;; }
+        public string FindingDetails { get; set; }
+
+        public string QuestionResponse { get; set; }
     }
 }

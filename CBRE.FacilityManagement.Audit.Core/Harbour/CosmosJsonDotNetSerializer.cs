@@ -2,6 +2,9 @@
 
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.Globalization;
+using System.Runtime.Serialization;
 using System.Text;
 
 public class CosmosJsonDotNetSerializer : CosmosSerializer
@@ -14,8 +17,12 @@ public class CosmosJsonDotNetSerializer : CosmosSerializer
     /// </summary>  
     public CosmosJsonDotNetSerializer(JsonSerializerSettings jsonSerializerSettings)
     {
-        _serializerSettings = jsonSerializerSettings ??
-              throw new ArgumentNullException(nameof(jsonSerializerSettings));
+        // Add the custom date time converter to the serializer settings
+        jsonSerializerSettings.Converters.Add(new CustomDateTimeConverter());
+
+        _serializerSettings = jsonSerializerSettings;
+        //_serializerSettings = jsonSerializerSettings ??
+        //      throw new ArgumentNullException(nameof(jsonSerializerSettings));
     }
 
     /// <summary>
@@ -76,5 +83,28 @@ public class CosmosJsonDotNetSerializer : CosmosSerializer
     private JsonSerializer GetSerializer()
     {
         return JsonSerializer.Create(_serializerSettings);
+    }
+}
+
+
+public class CustomDateTimeConverter : IsoDateTimeConverter
+{
+    public CustomDateTimeConverter()
+    {
+        DateTimeFormat = "yyyy-MM-ddTHH:mm:ss.fffffffZ 'UTC'";
+    }
+
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    {
+        if (reader.TokenType == JsonToken.String)
+        {
+            var dateString = (string)reader.Value;
+            var dateFormat = "yyyy-MM-ddTHH:mm:ss.fffffffZ 'UTC'";
+            if (DateTime.TryParseExact(dateString, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var date))
+            {
+                return date;
+            }
+        }
+        return base.ReadJson(reader, objectType, existingValue, serializer);
     }
 }

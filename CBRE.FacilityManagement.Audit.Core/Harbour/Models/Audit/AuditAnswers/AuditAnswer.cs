@@ -62,7 +62,7 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour.Models.Audit.AuditAnswers
         /// <summary>
         /// Gets or sets the answered date.
         /// </summary>
-        public virtual ZonedDateTime AnsweredDate { get; set; } = SystemClock.Instance.GetCurrentInstant().InUtc();
+        public virtual string AnsweredDate { get; set; }
 
         /// <summary>
         /// Gets or sets the attachments.

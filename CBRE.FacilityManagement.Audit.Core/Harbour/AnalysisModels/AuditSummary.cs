@@ -44,12 +44,12 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour.AnalysisModels
         /// <summary>
         /// Gets or sets StartDate
         /// </summary>
-        public ZonedDateTime StartDate { get; set; }
+        public string StartDate { get; set; }
 
         /// <summary>
         /// Gets or sets EndDate
         /// </summary>
-        public ZonedDateTime EndDate { get; set; }
+        public string EndDate { get; set; }
 
         /// <summary>
         /// Gets or sets the Assigned by user id.

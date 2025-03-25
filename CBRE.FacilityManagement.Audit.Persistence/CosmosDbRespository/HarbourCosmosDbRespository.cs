@@ -18,7 +18,7 @@ namespace CBRE.FacilityManagement.Audit.Persistence.CosmosDbRespository
         /// <summary>
         /// The database name.
         /// </summary>
-        private const string DatabaseName = "AzureTest";
+        private const string DatabaseName = "Aurora";
 
         /// <summary>
         /// CosmosClient.
