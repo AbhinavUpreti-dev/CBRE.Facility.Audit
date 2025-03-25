@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="MappingProfile\**" />
+    <EmbeddedResource Remove="MappingProfile\**" />
+    <None Remove="MappingProfile\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
@@ -20,7 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CBRE.FacilityManagement.Audit.Core\CBRE.FacilityManagement.Audit.Core.csproj" />
-	  <ProjectReference Include="..\CBRE.FacilityManagement.Audit.Persistence\CBRE.FacilityManagement.Audit.Persistence.csproj" />
+    <ProjectReference Include="..\CBRE.FacilityManagement.Audit.Persistence\CBRE.FacilityManagement.Audit.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>

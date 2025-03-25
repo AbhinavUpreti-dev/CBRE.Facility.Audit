@@ -1,7 +1,4 @@
 using CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetCustomers;
-using CBRE.FacilityManagement.Audit.Application.MappingProfile;
-using CBRE.FacilityManagement.Audit.Core.Harbour;
-using CBRE.FacilityManagement.Audit.Persistence.CosmosDbRespository;
 using CBRE.FacilityManagement.Audit.Persistence.DatabaseContexts;
 using CBRE.FacilityManagement.Audit.Persistence.Repository;
 using CBRE.FacilityManagement.Audit.Persistence.Repository.Interfaces;
@@ -10,13 +7,12 @@ using Microsoft.Extensions.Configuration;
 using CBRE.FacilityManagement.Audit.Infrastructure;
 using CBRE.FacilityManagement.Audit.API;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using System.Diagnostics;
+using CBRE.FacilityManagement.Audit.Core.Harbour;
 using CBRE.FacilityManagement.Audit.Application.Features.Harbour.Interfaces;
 using CBRE.FacilityManagement.Audit.Application.Features.Harbour.Services;
-using NodaTime.Serialization.JsonNet;
-using NodaTime;
-using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using System.Diagnostics;
+using CBRE.FacilityManagement.Audit.Persistence.CosmosDbRespository;
 internal class Program
 {
     private static void Main(string[] args)
@@ -24,24 +20,17 @@ internal class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-
-        builder.Services.AddControllers().AddNewtonsoftJson(
-                    options => { options.SerializerSettings.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb); });
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen(c =>
-        {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-            c.OperationFilter<SwaggerOperationFilter>();
-        });
+        builder.Services.AddSwaggerGen();
+
+        // Register AutoMapper
+        builder.Services.AddAutoMapper(typeof(Program));
 
         // Register MediatR
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetCustomerQuery).Assembly));
-        builder.Services.AddScoped<IELogBookRepository, ELogBookRespository>();
-        // Register AutoMapper
-        builder.Services.AddAutoMapper(typeof(ElogBookMappingProfile));
+        builder.Services.AddScoped<IELogBookRepository, ELogBookRepository>();
         builder.Services.AddDbContext<ELogBookDbContext>();
-        // Register configuration
         builder.Services.Configure<OpenAISettings>(builder.Configuration.GetSection("OpenAISettings"));
 
         // Register IDocumentSummarizerAIService with parameters
@@ -85,15 +74,13 @@ internal class Program
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1"));
+            app.UseSwaggerUI();
         }
 
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
-
         app.MapControllers();
-
         app.Run();
     }
+
 }

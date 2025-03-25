@@ -8,11 +8,10 @@ namespace CBRE.FacilityManagement.Audit.Application.Models.Documents
 {
     public class DocumentRequest
     {
-        public Guid? EntityId { get; set; }
-        public int? DocumentGroupId { get; set; }
-        public string? Name { get; set; }
-        public string? MimeType { get; set; }
-        public string? Extension { get; set; }
-        public bool? IsActive { get; set; }
+        public string? CustomerName { get; set; }
+        public string? ContractName { get; set; }
+        public string? BuildingName { get; set; }
+        public string? DocumentGroup { get; set; }
+        public string? DocumentSubGroup { get; set; }
     }
 }

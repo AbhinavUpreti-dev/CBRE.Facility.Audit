@@ -26,7 +26,7 @@ namespace CBRE.FacilityManagement.Audit.API.Controllers
             return Ok(customers);
         }
 
-        [HttpPost("documents")]
+        [HttpPost("recommendations")]
         public async Task<ActionResult<List<DocumentDTO>>> GetDocuments([FromBody] DocumentRequest request)
         {
             var query = new GetDocumentSummary(request);

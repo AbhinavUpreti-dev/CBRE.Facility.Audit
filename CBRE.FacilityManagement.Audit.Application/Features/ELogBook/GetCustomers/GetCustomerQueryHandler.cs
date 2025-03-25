@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using CBRE.FacilityManagement.Audit.Persistence.Repository.Interfaces;
 namespace CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetCustomers
 {
     public class GetCustomerQueryHandler : IRequestHandler<GetCustomerQuery, List<CustomerDTO>>

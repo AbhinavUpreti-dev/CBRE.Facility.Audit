@@ -23,40 +23,69 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetDocumen
 
         public async Task<List<DocumentDTO>> Handle(GetDocumentSummary request, CancellationToken cancellationToken)
         {
-            var documents = await _repository.GetDocumentsAsync(
-                request.Request.EntityId,
-                request.Request.DocumentGroupId,
-                request.Request.Name,
-                request.Request.MimeType,
-                request.Request.Extension,
-                request.Request.IsActive);
+            ValidateRequest(request);
 
-            var document = documents.FirstOrDefault();
-            if (document == null)
+            var documents = await _repository.GetDocumentsAsync(
+                request.Request.CustomerName,
+                request.Request.ContractName,
+                request.Request.BuildingName,
+                request.Request.DocumentGroup,
+                request.Request.DocumentSubGroup);
+
+            if (documents == null)
             {
-                return new List<DocumentDTO>();
+                // Handle the case where no document is found
+                throw new Exception("No document found for the given criteria.");
             }
 
-            var fileData = document.FileData;
-            var fileExtension = document.Extension;
-            var filePath = $"input{fileExtension}";
-
-            // Save the byte array as a file
-            await File.WriteAllBytesAsync(filePath, fileData, cancellationToken);
-
+            List<string> filePaths = new List<string>();
+            string aiSummary = "";
             try
             {
-                var aiSummary = _summarizerAIService.GenerateSummaryAsync(new List<string> { filePath }, fileExtension);
+                foreach (var document in documents)
+                {
+                    var fileData = document.FileData;
+                    var fileExtension = document.Extension;
+                    var path = $"input{fileExtension}";
+                    filePaths.Add(path);
 
-                return new List<DocumentDTO> { new DocumentDTO { DocumentSummary = aiSummary } };
+                    // Save the byte array as a file
+                    File.WriteAllBytes(path, fileData);
+                    var summary =  _summarizerAIService.GenerateSummaryAsync(new List<string> { path }, fileExtension);
+                    aiSummary += $"AI Generated Summary of {document.Name}:\n{summary}\n\n";
+                }
+                return new List<DocumentDTO> { new DocumentDTO { Recommendations = aiSummary } };
             }
             finally
             {
-                // Ensure the file is deleted after processing
-                if (File.Exists(filePath))
+                foreach (var filePath in filePaths)
                 {
-                    File.Delete(filePath);
+                    // Ensure the file is deleted after processing
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
                 }
+            }
+        }
+
+        private void ValidateRequest(GetDocumentSummary request)
+        {
+            if (string.IsNullOrEmpty(request.Request.DocumentGroup))
+            {
+                throw new ArgumentException("DocumentGroup is required.");
+            }
+
+            if (!string.IsNullOrEmpty(request.Request.DocumentSubGroup))
+            {
+                var documentGroup = _repository.GetDocumentGroupByName(request.Request.DocumentGroup);
+                if (documentGroup == null || documentGroup.ParentId != null)
+                {
+                    throw new ArgumentException("Invalid DocumentGroup specified.");
+                }
+
+                var documentSubGroup = _repository.GetDocumentGroupByName(request.Request.DocumentSubGroup);
+               
             }
         }
     }
