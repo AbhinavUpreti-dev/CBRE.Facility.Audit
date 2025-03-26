@@ -11,5 +11,9 @@ namespace CBRE.FacilityManagement.Audit.Application.Models.Harbour
         public string AuditSummary { get; set; }
 
         public string IncidentSummary { get; set; }
+
+        public string IFMHubSummary { get; set; }
+
+        public string AuditActionsSummary { get; set; }
     }
 }
