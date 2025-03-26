@@ -10,6 +10,12 @@ namespace CBRE.FacilityManagement.Audit.Application.Models.Harbour
         /// </summary>
         [FromQuery(Name = "filter")]
         public List<string> Filters { get; set; }
-        
+
+        [FromQuery(Name = "title")]
+        public string AuditTitle { get; set; }
+
+        [FromQuery(Name = "isIFMHub")]
+        public bool IsIFMHub { get; set; } = false;
+
     }
 }

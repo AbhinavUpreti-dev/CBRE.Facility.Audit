@@ -88,7 +88,7 @@ namespace CBRE.FacilityManagement.Audit.Infrastructure
         }
 
 
-        public async Task<string> GenerateAuditSummaryAsync(string jsonText)
+        public async Task<string> GenerateAuditSummaryAsync(string jsonText, string prompt = "", string assetJson = "")
         {
             if (string.IsNullOrEmpty(jsonText))
             {
@@ -101,7 +101,8 @@ namespace CBRE.FacilityManagement.Audit.Infrastructure
             var messages = new List<ChatMessage>
             {
                 new SystemChatMessage("You are a helpful assistant."),
-                new UserChatMessage($"Summarize the following JSON data: {jsonText}.Please provide a detailed summary including the key points of the json without including any words such as json or datasets in response and include title as Audit Summary.")
+                new UserChatMessage(string.IsNullOrEmpty(assetJson) ? string.Format(prompt, jsonText) : string.Format(prompt, jsonText, assetJson)),
+                // new UserChatMessage($"Summarize the following JSON data: {jsonText}.Please provide a detailed summary including the key points of the json without including any words such as json or datasets in response.")
             };
 
             ChatCompletion completion;

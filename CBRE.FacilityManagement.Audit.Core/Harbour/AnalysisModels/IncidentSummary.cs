@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CBRE.FacilityManagement.Audit.Core.Harbour.Models.Audit;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,15 +13,8 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour.AnalysisModels
 
         public string DateOfIncident { get; set; }
 
-        public string ClientName { get; set; }
-
-        public string SiteName { get; set; }
-
-        public string SiteAddress { get; set; }
-
         public string TreatmentProvided { get; set; }
         public string IncidentDescription { get; set; }
-        public string bodyPartsInjured { get; set; }
 
         public bool ClaimRaised { get; set; }
 
@@ -31,5 +25,16 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour.AnalysisModels
         public bool IsEndOfLifeEvent { get; set; }
 
         public string HowInjuryHappened { get; set; }
+
+        public string IncidentType { get; set; }
+
+        public string NonInjuryType { get; set; }
+
+        public string Title { get; set; }
+
+        public string Reason { get; set; }
+
+        public List<ActionSummary> IncidentActions = new List<ActionSummary>();
+
     }
 }

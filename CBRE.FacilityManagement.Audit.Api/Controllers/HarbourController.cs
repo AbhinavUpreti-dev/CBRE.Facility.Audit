@@ -20,5 +20,12 @@ namespace CBRE.FacilityManagement.Audit.API.Controllers
             var result = await auditAppService.GetHierarchySummary(inputModel);
             return Ok(result);
         }
+
+        [HttpGet("GetAuditActionSummary/{ct?}")]
+        public async Task<ActionResult> GetAuditActionSummary(HierarchyInputModel inputModel)
+        {
+            var result = await auditAppService.GetAuditActionSummary(inputModel);
+            return Ok(result);
+        }
     }
 }
