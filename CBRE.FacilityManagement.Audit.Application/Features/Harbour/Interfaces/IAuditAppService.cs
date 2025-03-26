@@ -10,5 +10,7 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.Harbour.Interfaces
     public interface IAuditAppService
     {
         Task<SummaryModel> GetHierarchySummary(HierarchyInputModel inputModel);
+
+        Task<string> GetAuditActionSummary(HierarchyInputModel inputModel);
     }
 }

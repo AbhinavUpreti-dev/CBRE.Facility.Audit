@@ -93,7 +93,7 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour.AnalysisModels
 
         public List<QuestionAnswers> QuestionAnswers { get; set; } = new List<QuestionAnswers>();
 
-        public List<ActionSummary> Actions { get; set; } = new List<ActionSummary>();
+        // public List<ActionSummary> Actions { get; set; } = new List<ActionSummary>();
 
     }
 }
