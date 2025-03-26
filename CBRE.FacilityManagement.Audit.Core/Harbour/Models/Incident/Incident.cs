@@ -109,6 +109,12 @@ namespace CBRE.FacilityManagement.Audit.Core.Harbour.Models.Incident
                 this.formData = new Dictionary<string, object>(formData, StringComparer.InvariantCultureIgnoreCase);
             }
 
+            public string NonInjuryType
+            {
+                get => this.formData.GetValueAsString("nonInjury.NonInjuryType");
+                set => this.formData.UpsertValue("nonInjury.NonInjuryType", value);
+            }
+
             /// <summary>
             /// Gets or sets the record identifier.
             /// </summary>
