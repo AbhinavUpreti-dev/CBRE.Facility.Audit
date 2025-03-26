@@ -74,7 +74,7 @@ namespace CBRE.FacilityManagement.Audit.Persistence.Repository
             }
 
             var documentList = await query
-                .OrderByDescending(d => d.Id).Take(1)
+                .OrderByDescending(d => d.Created).Take(1)
                 .Select(d => new
                 {
                     d.Id,

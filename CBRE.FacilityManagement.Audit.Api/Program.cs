@@ -30,7 +30,9 @@ internal class Program
         // Register MediatR
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetCustomerQuery).Assembly));
         builder.Services.AddScoped<IELogBookRepository, ELogBookRepository>();
+        builder.Services.AddScoped<IWebQuoteRepository, WebQuoteRepository>();
         builder.Services.AddDbContext<ELogBookDbContext>();
+        builder.Services.AddDbContext<WebQuoteDatabaseContext>();
         builder.Services.Configure<OpenAISettings>(builder.Configuration.GetSection("OpenAISettings"));
 
         // Register IDocumentSummarizerAIService with parameters

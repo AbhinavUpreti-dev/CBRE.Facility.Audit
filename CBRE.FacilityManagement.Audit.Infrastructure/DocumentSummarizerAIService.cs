@@ -61,7 +61,7 @@ namespace CBRE.FacilityManagement.Audit.Infrastructure
                 var chunks = SplitTextIntoChunks(documentText, maxTokenLimit / 2); // Adjust chunk size as needed
                 foreach (var chunk in chunks)
                 {
-                    string prompt = $"You are an AI assistant. Please provide a concise and informative recommendations from the following document. Highlight the recommendations section if present:\n\n{chunk}\n\nSummary:";
+                    string prompt = $"You are an AI assistant. Please provide a concise and informative recommendations from the following document. Highlight the recommendations section if present:\n\n{chunk}\n\nRecommendations:";
                     var messages = new List<ChatMessage>
                     {
                         new SystemChatMessage("You are a helpful assistant."),
