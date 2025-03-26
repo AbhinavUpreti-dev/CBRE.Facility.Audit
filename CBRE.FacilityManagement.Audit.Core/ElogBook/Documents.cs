@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection.Metadata;
 
-namespace CBRE.FacilityManagement.Audit.Core
+namespace CBRE.FacilityManagement.Audit.Core.ElogBook
 {
     public class Documents
     {
@@ -23,6 +23,7 @@ namespace CBRE.FacilityManagement.Audit.Core
         public int? AssetId { get; set; }
         public string ScanResult { get; set; }
         public DocumentGroup DocumentGroup { get; set; }
+        public List<Action> Actions { get; set; } = new List<Action>();
     }
     public class DocumentGroup
     {
@@ -35,6 +36,7 @@ namespace CBRE.FacilityManagement.Audit.Core
         public ICollection<DocumentGroupProperty> DocumentGroupProperties { get; set; }
         public int? MasterDocumentGroupId { get; set; } // Foreign key to MasterDocumentGroup
         public MasterDocumentGroup MasterDocumentGroup { get; set; } // Navigation property to MasterDocumentGroup
+        public List<Action> Actions { get; set; } = new List<Action>();
 
         // Computed property for EffectiveName
         public string EffectiveName => !string.IsNullOrEmpty(Name) ? Name : MasterDocumentGroup?.Name;
@@ -91,7 +93,19 @@ namespace CBRE.FacilityManagement.Audit.Core
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string UniqueId { get; set; }
         public ICollection<ContractBuilding> ContractBuildings { get; set; }
     }
+    public class Action
+    {
+        public int DocumentGroupId { get; set; }
+        public int Id { get; set; }
+        public string Description { get; set; }
+        public string Status { get; set; }
+        public DateTimeOffset? RequiredDate { get; set; }
+        public DateTimeOffset? ClosedDate { get; set; }
+        public DocumentGroup DocumentGroup { get; set; }
+    }
+
 
 }

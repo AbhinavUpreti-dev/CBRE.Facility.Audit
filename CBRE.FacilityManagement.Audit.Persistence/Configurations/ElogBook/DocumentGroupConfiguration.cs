@@ -1,4 +1,4 @@
-﻿using CBRE.FacilityManagement.Audit.Core;
+﻿using CBRE.FacilityManagement.Audit.Core.ElogBook;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,10 +1,12 @@
 ﻿using CBRE.FacilityManagement.Audit.Application.DTO.Elogbook;
+using CBRE.FacilityManagement.Audit.Core;
 using CBRE.FacilityManagement.Audit.Persistence.Repository.Interfaces;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,14 +25,13 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetDocumen
 
         public async Task<List<DocumentDTO>> Handle(GetDocumentSummary request, CancellationToken cancellationToken)
         {
-            ValidateRequest(request);
-
+            var (docId, docSubGroupId) =  ValidateRequest(request);
             var documents = await _repository.GetDocumentsAsync(
                 request.Request.CustomerName,
                 request.Request.ContractName,
                 request.Request.BuildingName,
-                request.Request.DocumentGroup,
-                request.Request.DocumentSubGroup);
+               docId,
+               docSubGroupId,request.Request.UserId);
 
             if (documents == null)
             {
@@ -39,6 +40,7 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetDocumen
             }
 
             List<string> filePaths = new List<string>();
+            List<DocumentDTO> documentDTOs = new List<DocumentDTO>();
             string aiSummary = "";
             try
             {
@@ -53,8 +55,25 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetDocumen
                     File.WriteAllBytes(path, fileData);
                     var summary =  _summarizerAIService.GenerateSummaryAsync(new List<string> { path }, fileExtension);
                     aiSummary += $"AI Generated Summary of {document.Name}:\n{summary}\n\n";
+                   
+                    var actions = await _repository.GetActionsByDocumentGroupIdAsync(document.DocumentGroupId.Value);
+
+                    var actionDTOs = actions.Select(a => new ActionDTO
+                    {
+                        Id = a.Id,
+                        Description = a.Description,
+                        Status = a.Status,
+                        RequiredDate = a.RequiredDate,
+                        ClosedDate = a.ClosedDate
+                    }).ToList();
+
+                    documentDTOs.Add(new DocumentDTO
+                    {
+                        Recommendations = aiSummary,
+                        Actions = actionDTOs
+                    });
                 }
-                return new List<DocumentDTO> { new DocumentDTO { Recommendations = aiSummary } };
+                return documentDTOs;
             }
             finally
             {
@@ -69,24 +88,30 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetDocumen
             }
         }
 
-        private void ValidateRequest(GetDocumentSummary request)
+        private (int docId, int docSubGroupId) ValidateRequest(GetDocumentSummary request)
         {
             if (string.IsNullOrEmpty(request.Request.DocumentGroup))
             {
                 throw new ArgumentException("DocumentGroup is required.");
             }
-
+            var docId = 0;
+            var docSubId = 0;
             if (!string.IsNullOrEmpty(request.Request.DocumentSubGroup))
             {
                 var documentGroup = _repository.GetDocumentGroupByName(request.Request.DocumentGroup);
                 if (documentGroup == null || documentGroup.ParentId != null)
                 {
+                    docId = documentGroup.Id;
                     throw new ArgumentException("Invalid DocumentGroup specified.");
                 }
 
                 var documentSubGroup = _repository.GetDocumentGroupByName(request.Request.DocumentSubGroup);
-               
+               if(documentSubGroup is not null)
+                {
+                    docSubId = documentSubGroup.Id;
+                }
             }
+            return (docId,docSubId);
         }
     }
 }

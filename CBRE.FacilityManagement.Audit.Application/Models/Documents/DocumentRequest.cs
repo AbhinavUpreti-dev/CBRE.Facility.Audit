@@ -13,5 +13,6 @@ namespace CBRE.FacilityManagement.Audit.Application.Models.Documents
         public string? BuildingName { get; set; }
         public string? DocumentGroup { get; set; }
         public string? DocumentSubGroup { get; set; }
+        public string? UserId { get; set; }
     }
 }
