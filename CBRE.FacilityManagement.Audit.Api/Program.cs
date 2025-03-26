@@ -26,7 +26,16 @@ internal class Program
 
         // Register AutoMapper
         builder.Services.AddAutoMapper(typeof(Program));
-
+        // Configure CORS to allow all origins, headers, and methods
+        builder.Services.AddCors(options =>
+        options.AddPolicy("CorsPolicy", builder =>
+        {
+            builder.WithOrigins("http://localhost:3001")
+                   .AllowAnyMethod()
+                   .AllowAnyHeader()
+                   .AllowCredentials();
+        })
+        );
         // Register MediatR
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetCustomerQuery).Assembly));
         builder.Services.AddScoped<IELogBookRepository, ELogBookRepository>();
@@ -78,7 +87,7 @@ internal class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
+        app.UseCors("CorsPolicy");
         app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapControllers();
