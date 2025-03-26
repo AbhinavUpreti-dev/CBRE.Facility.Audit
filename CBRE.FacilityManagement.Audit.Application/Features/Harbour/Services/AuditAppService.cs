@@ -44,16 +44,17 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.Harbour.Services
             }
             else
             {
-                response.AuditSummary = "";
-                response.IncidentSummary = await GetIncidentSummary(filters, true);
+                response.IFMHubSummary = await GetIncidentSummary(filters, true);
                 return response;
             }
 
         }
 
-        public async Task<string> GetAuditActionSummary(HierarchyInputModel inputModel)
+        public async Task<SummaryModel> GetAuditActionSummary(HierarchyInputModel inputModel)
         {
             Dictionary<int, int> filters;
+            SummaryModel response = new SummaryModel();
+
             List<ActionSummary> actions = new List<ActionSummary>();
             try
             {
@@ -129,9 +130,9 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.Harbour.Services
             {
                 string auditActionPrompt = "Summarize the following JSON data: {0}.Please provide a detailed summary including the key points of the json without including any words such as json or datasets in response.";
                 string auditActionSummaryJson = JsonConvert.SerializeObject(actions);
-                return await this.documentSummarizerAIService.GenerateAuditSummaryAsync(auditActionSummaryJson, auditActionPrompt, "");
+                response.AuditActionsSummary =  await this.documentSummarizerAIService.GenerateAuditSummaryAsync(auditActionSummaryJson, auditActionPrompt, "");
             }
-            return "";
+            return response;
         }
 
         public async Task<string> GetAuditSummary(Dictionary<int, int> filters)
