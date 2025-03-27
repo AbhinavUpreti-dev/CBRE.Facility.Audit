@@ -10,6 +10,7 @@ using CBRE.FacilityManagement.Audit.Application.Models.Harbour;
 using CBRE.FacilityManagement.Audit.Core.Harbour.Helper;
 using MediatR;
 using CBRE.FacilityManagement.Audit.Core.IFMHub;
+using System;
 
 namespace CBRE.FacilityManagement.Audit.Application.Features.Harbour.Services
 {
@@ -38,7 +39,7 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.Harbour.Services
             }
             if (!inputModel.IsIFMHub)
             {
-                response.AuditSummary = await GetAuditSummary(filters);
+                response.AuditSummary = await GetAuditSummary(filters, inputModel.TimeLine);
                 response.IncidentSummary = await GetIncidentSummary(filters);
                 return response;
             }
@@ -135,23 +136,30 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.Harbour.Services
             return response;
         }
 
-        public async Task<string> GetAuditSummary(Dictionary<int, int> filters)
+        public async Task<string> GetAuditSummary(Dictionary<int, int> filters, int timeLine)
         {
 
             List<AuditSummary> audits = new List<AuditSummary>();
             string auditSummaryJson = string.Empty;
             string auditFinalSummary = string.Empty;
 
+            DateTime fromDate = DateTime.Now.AddMonths(-6);
+           
+            if (timeLine == 3)
+            {
+                fromDate = DateTime.Now.AddMonths(-3);
+            }
 
-            string auditQuery = "SELECT * FROM c " +
-                " where c.Container = 'Audit'" +
-                " AND ARRAY_CONTAINS(c.CorrelatedScopes, {\r\n    \"ScopeLevelId\": 17,\r\n    \"HarbourEntityId\": '628665'\r\n}, true)" +
-                " AND ARRAY_CONTAINS(c.CorrelatedScopes, {\r\n    \"ScopeLevelId\": 10,\r\n    \"HarbourEntityId\": '3'\r\n}, true)" +
-                " order by c._ts desc";
+            // Convert to DateTimeOffset to include time zone information
+            DateTimeOffset dateTimeOffset = new DateTimeOffset(fromDate, TimeZoneInfo.Local.GetUtcOffset(fromDate));
+
+            // Format the DateTimeOffset to include the time zone offset
+            string formattedDate = dateTimeOffset.ToString("yyyy-MM-ddTHH:mm:sszzz");
 
             string sqlQuery = $@"
                                 SELECT * FROM c 
                                 WHERE c.Container = 'Audit'
+                                AND c.CreatedDate >= '{formattedDate}'
                                 AND ARRAY_CONTAINS(c.CorrelatedScopes, {{
                                     ""ScopeLevelId"": 17,
                                     ""HarbourEntityId"": '{filters[17]}'
@@ -212,9 +220,6 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.Harbour.Services
                     EndDate = audit.EndDate,
                     AssignedByUserId = audit.AssignedByUserId,
                     Assignees = auditAssignees,
-                    ClientName = audit.ClientName ?? audit.AuditHierarchyScope?.ClientCountryName,
-                    SiteName = audit.SiteName,
-                    SiteAddress = audit.SiteAddress,
                     Status = audit.States?.FirstOrDefault(x => x.IsActive)?.Name,
                 };
 
@@ -380,12 +385,14 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.Harbour.Services
             }
             if (incidents.Count > 0)
             {
-                string prompt = !isIFMHub ? "Based on these incident reports and actions taken provided in the json: {0}, what type of audit should be conducted at this site ? Identify the key areas that need auditing for this site without using the words such as json in the response.":
+                string prompt = !isIFMHub ? "Based on these incident reports and actions taken provided in the json: {0}, what type of audit should be conducted at this site ? Identify the key areas that need auditing for this site without using the words such as json in the response.Please generate content without using <h3> headings. Instead, use <strong> tags to emphasize important points." :
                      "Based on these incident reports present in the json: {0}, predict if any assets present in the assets json : {1} might be damaged.Determine if an audit is necessary for these assets based on past incidents without using the words such as json in the response.";
 
+                string incidentInsightsPrompt = !isIFMHub ? "Analyze the following data on incidents and actions taken provided in the json: {0}. Identify patterns and trends, assess the risk level, and determine if an audit is necessary and  what type of audit should be conducted at this site. Provide recommendations for improvements based on the analysis without using the words such as json in the response and not use <h3> headings instead, use <strong> tags to emphasize important points.":
+                    "Analyze the following data on and incidents : {0}, and assets present in the assets json : {1}.Provide insights into the health of each asset, determine if an audit is necessary, and suggest the type of audit required. Generate recommendations for improvements or preventive measures without using the words such as json in the response and not use <h3> headings instead, use <strong> tags to emphasize important points.";
                 // string incidentSummaryPrompt = "Summarize the following JSON data: {0}.Please provide a detailed summary including the key points of the json without including any words such as json or datasets in response.";
                 incidentSummaryJson = JsonConvert.SerializeObject(incidents);
-                return await this.documentSummarizerAIService.GenerateAuditSummaryAsync(incidentSummaryJson, prompt, assetJson);
+                return await this.documentSummarizerAIService.GenerateAuditSummaryAsync(incidentSummaryJson, incidentInsightsPrompt, assetJson);
             }
             return "";
         }

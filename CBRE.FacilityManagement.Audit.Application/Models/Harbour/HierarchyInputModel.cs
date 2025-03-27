@@ -17,5 +17,8 @@ namespace CBRE.FacilityManagement.Audit.Application.Models.Harbour
         [FromQuery(Name = "isIFMHub")]
         public bool IsIFMHub { get; set; } = false;
 
+        [FromQuery(Name = "timeLine")]
+        public int TimeLine { get; set; }
+
     }
 }
