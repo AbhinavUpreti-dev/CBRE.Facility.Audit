@@ -53,7 +53,7 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.ELogBook.GetDocumen
 
                     // Save the byte array as a file
                     File.WriteAllBytes(path, fileData);
-                    var summary =  _summarizerAIService.GenerateSummaryAsync(new List<string> { path }, fileExtension);
+                    var summary =  _summarizerAIService.GenerateSummaryAsync(new List<string> { path }, fileExtension,request.Request.showFullSummary.Value);
                   //  aiSummary += $"AI Generated Recommendation {document.Name}:\n{summary}\n\n";
                    
                     var actions = await _repository.GetActionsByDocumentGroupIdAsync(document.DocumentGroupId.Value);
