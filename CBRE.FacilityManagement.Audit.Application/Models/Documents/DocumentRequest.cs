@@ -11,8 +11,8 @@ namespace CBRE.FacilityManagement.Audit.Application.Models.Documents
         public string? CustomerName { get; set; }
         public string? ContractName { get; set; }
         public string? BuildingName { get; set; }
-        public string? DocumentGroup { get; set; }
-        public string? DocumentSubGroup { get; set; }
-        public string? UserId { get; set; }
+        public string? DocumentGroup { get; set; } = "C - Electrical Safety Logbook";
+        public string? DocumentSubGroup { get; set; } = "010 Electrical Installation Certificates (including Minor Works)";
+        public string? UserId { get; set; } = "aupreti";
     }
 }
