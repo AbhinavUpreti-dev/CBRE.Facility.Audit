@@ -33,5 +33,26 @@ namespace CBRE.FacilityManagement.Audit.API.Controllers
             var documents = await _mediator.Send(query);
             return Ok(documents);
         }
+
+        //[HttpPost("recommendations/{optionalValue?}")]
+        //public async Task<ActionResult<List<DocumentDTO>>> GetDocuments([FromBody] DocumentRequest request, string optionalValue = null)
+        //{
+        //    if (string.IsNullOrEmpty(optionalValue))
+        //    {
+        //        // Logic when optionalValue is not provided
+        //        var query = new GetDocumentSummary(request);
+        //        var documents = await _mediator.Send(query);
+        //        return Ok(documents);
+        //    }
+        //    else
+        //    {
+        //        // Logic when optionalValue is provided
+        //        // Modify the request or query based on optionalValue
+        //        var modifiedRequest = ModifyRequestBasedOnOptionalValue(request, optionalValue);
+        //        var query = new GetDocumentSummary(modifiedRequest);
+        //        var documents = await _mediator.Send(query);
+        //        return Ok(documents);
+        //    }
+        //}
     }
 }

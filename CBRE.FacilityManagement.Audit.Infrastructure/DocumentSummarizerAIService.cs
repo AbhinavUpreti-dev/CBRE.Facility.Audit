@@ -33,7 +33,7 @@ namespace CBRE.FacilityManagement.Audit.Infrastructure
             _openAIClient = new AzureOpenAIClient(new Uri(endpoint), credentials);
         }
 
-        public string GenerateSummaryAsync(List<string> documents, string extension)
+        public string GenerateSummaryAsync(List<string> documents, string extension, bool showFullSummary)
         {
             if (documents == null || documents.Count == 0)
             {
@@ -61,7 +61,18 @@ namespace CBRE.FacilityManagement.Audit.Infrastructure
                 var chunks = SplitTextIntoChunks(documentText, maxTokenLimit / 2); // Adjust chunk size as needed
                 foreach (var chunk in chunks)
                 {
-                    string prompt = $"You are an AI assistant. Please provide a concise and informative recommendations from the following document. Highlight the recommendations section if present:\n\n{chunk}\n\nRecommendations:";
+                    string prompt = "";
+
+                    if (showFullSummary)
+                    {
+                        prompt = $"You are an AI assistant. Please provide a concise and informative summary from the following document. Highlight the recommendations section if present. Ensure that any client-specific details, including client location and site information, are masked or redacted. For example, replace specific place names with empty string. Do not include empty sections in the summary:\n\n{chunk}\n\nSummary:";
+
+                    }
+                    else
+                    {
+                        prompt = $"You are an AI assistant. Please provide a concise and informative recommendations from the following document. Highlight the recommendations section if present.:\n\n{chunk}\n\nRecommendations:";
+                        //prompt = $"You are an AI assistant. Please provide a concise and informative recommendations from the following document. Highlight the recommendations section if present:\n\n{chunk}\n\nRecommendations:";
+                    }
                     var messages = new List<ChatMessage>
                     {
                         new SystemChatMessage("You are a helpful assistant."),

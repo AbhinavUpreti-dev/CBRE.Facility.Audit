@@ -26,8 +26,8 @@ namespace CBRE.FacilityManagement.Audit.Application.Features.WebQuote.GetQuoteEs
             return quoteEstimates.Take(10).Select(qe => new QuoteEstimateDto
             {
                 Category = qe.QuoteType?.Name,
-                GroupDescription = qe.Group?.GroupDescription,
-                SubGroupDescription = qe.SubGroup?.SubGroupDescription,
+                GroupDescription = "Electrical",//qe.Group?.GroupDescription,
+                SubGroupDescription = "Unsafe Electrics",//qe.SubGroup?.SubGroupDescription,
                 Status = qe.Closed?"InActive":"Active",
                 Description = qe.Description               
             }).ToList();
